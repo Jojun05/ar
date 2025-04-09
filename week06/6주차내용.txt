@@ -1,0 +1,89 @@
+pwd << 현재 내가 있는 위치
+/home/PC <- 이렇게 뜸 home이 뜨는 이유가 사용자끼리 구별하기 위해서
+====
+cd .. << 상위폴더 위로 올라가는거  
+예시)
+~
+cd ..
+/home
+cd ..
+/
+===
+ls << 그 파일에 있는 리스트
+===
+ls -al << 
+===
+절대주소 쓰는법
+cd /home/PC/ << 이런식으로 해야 절대주소임
+===
+파일 만드는법 
+mkdir 만들꺼이름
+===
+만든 파일로 이동하는법은 절대주소 이용하기
+cd 만들꺼이름
+
+vim 제목.c
+
+w 콜론+ 저장
+
+ㅈ wjwkd 
+a whdfy 종료 
+
+boot 와이어링 
+
+make telosb(문법체크)
+make telosb install(노드아이디)
+make telosb instal.100
+
+
+/**
+ * Blink is a basic application that toggles a mote's LED periodically.
+ * It does so by starting a Timer that fires every second. It uses the
+ * OSKI TimerMilli service to achieve this goal.
+ *
+ * @author tinyos-help@millennium.berkeley.edu
+ */
+
+configuration BlinkAppC // Blink 애플리케이션의 구성 요소를 정의
+{
+}
+
+implementation // 구성 요소의 구현을 작성
+{ 
+	//밑에 이건 필수코드
+  components MainC, BlinkC, LedsC; 
+  components new TimerMilliC() as Timer0;  
+
+  BlinkC -> MainC.Boot; // BlinkC 컴포넌트를 MainC의 Boot 연결
+  BlinkC.Timer0 -> Timer0; // BlinkC 컴포넌트를 Timer0와 연결하여 시간 기능
+  BlinkC.Leds -> LedsC;
+}
+======================================
+/**
+ * Implementation for Blink application. Toggle the red LED when a
+ * Timer fires.
+ **/
+
+#include "Timer.h" //헤더파일
+//모듈 선언
+module BlinkC @safe()
+{
+    uses interface Timer<TMilli> as Timer0; // Timer 인터페이스(TMilli 타입)
+    uses interface Leds; // LED 제어
+    uses interface Boot; //시스템 부팅	
+}
+implementation
+{
+    event void Boot.booted()
+    {
+        call Timer0.startPeriodic( 250 );
+    }
+//타이머 이벤트
+    event void Timer0.fired()
+    {
+        call Leds.led0Toggle(); //LED 0번 전환
+    }
+}
+===================
+COMPONENT=BlinkAppC // BlinkAppC를 주 컴포넌트로 설정
+include $(MAKERULES) // TinyOS에서 제공하는 Makefile 규칙을 포함
