@@ -1,0 +1,15 @@
+sudo apt-get install fonts-unfonts-code -y
+sudo apt-get install ibus ibus-hangul -y
+sudo reboot
+위에 있는건 한국어로 바꾸는것임 
+
+Raspberry pi 
+
+ipv4설정
+10.40.45.15 / 25 / 10.40.45.1
+
+===학교ip===
+주소:10.40.45.??
+넷마스크 : 24
+게이트웨이 10.40.45.1
+dns:221.154.90.11
