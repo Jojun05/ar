@@ -1,0 +1,26 @@
+텔레그램 bot 실습
+https://api.telegram.org/bot{api키}/getUpdates
+## EDITING CODE
+import cv2  # OpenCV 라이브러리를 사용하기 위한 import
+import time  # 시간 지연을 위해 time 모듈 import
+
+## EDITING CODE
+def takePhoto():
+    cap = cv2.VideoCapture(0)  # 0번 카메라(기본 웹캠) 열기
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)  # 프레임 너비 설정 (640픽셀)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)  # 프레임 높이 설정 (480픽셀)
+    
+    if not cap.isOpened():  # 카메라가 제대로 열리지 않은 경우
+        print("camera open error")  # 에러 메시지 출력
+        return  # 함수 종료
+    
+    ret, image = cap.read()  # 카메라로부터 프레임(이미지) 읽기
+    if not ret:  # 이미지 읽기에 실패한 경우
+        print("frame read error")  # 에러 메시지 출력
+        return  # 함수 종료
+    
+    cv2.imshow('CAMERA', image)  # 'CAMERA'라는 이름의 창에 이미지 보여주기
+    time.sleep(1)  
+    cv2.imwrite('./image.jpg', image)  # 읽은 이미지를 image.jpg로 저장
+    cap.release() =
+    cv2.destroyAllWindows()  # 창 닫기
