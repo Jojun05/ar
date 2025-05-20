@@ -1,0 +1,65 @@
+influx
+
+create database dust2 <- 생성
+
+show database <- 확인해서 있는지 확인 확인했으면 
+exit <- 나가기
+mkdir 202444025 <- 내 파일 만들고
+cd 202444025 <- 내 파일 들어가기
+vim dustInfluxdb.py <- 들어가기 
+(오류중 trackback 해결법)
+pip install influxdb <- 이걸 실행해주고 
+만약에 이것도 error가 뜬다면 
+sudo rm /usr/lib/python3.11/EXTETNALLY-MANAGED 를 친다
+pip install influxdb를 하면 된다
+이걸 또 다하고 나서 오류가 생길수있는데 이때는
+선을 다시 한 경우나 맞춤법or선 잘못 꽂은경우인데 
+ttyACM0 포트를 1에서 0으로 바꿔준다 
+
+locallhost:3000에 들어가고
+where inhaUni::tag 누르고 2222누르고
+select에서 dust 누르면 그래프 나옴
+
+
+
+==========================
+import time  # 시간 관련 기능을 사용하기 위한 모듈
+import requests, json  # HTTP 요청 및 JSON 데이터 처리를 위한 모듈
+from influxdb import InfluxDBClient as influxdb  # InfluxDB 연결을 위한 모듈
+import serial  # 시리얼 포트 통신을 위한 모듈
+
+# 시리얼 포트 설정 (ACM0 포트 사용, 보드레이트 9600bps, 타임아웃 없음)
+seri = serial.Serial('/dev/ttyACM0', baudrate=9600, timeout=None)
+while True:
+    time.sleep(1)  # 1초마다 데이터 읽기
+    if seri.in_waiting != 0:  # 시리얼 버퍼에 데이터가 있는 경우
+        content = seri.readline()
+        a = float(content.decode())  
+        # InfluxDB에 저장할 데이터 구조 정의
+        data = [{
+            'measurement': 'dust', 
+            'tags': {
+                'InhaUni': '2222',  #
+            },
+            'fields': {
+                'dust': a,  # 미세먼지 데이터 저장
+            }
+        }]
+client = None  
+try:
+    # InfluxDB 서버에 연결 시도 ('localhost'에서 8086 포트 사용)
+    client = influxdb('localhost', 8086, 'root', 'root', 'dust')  
+except Exception as e:
+    print("Exception" + str(e))  
+if client is not None:
+    try:
+        client.write_points(data)  
+    except Exception as e:
+        print("Exception write " + str(e))  
+    finally:
+        # 닫기
+        client.close()  
+# a 변수 값 출력 
+print(a)  
+# InfluxDB 작업이 정상적 작동 
+print("running influxdb OK")  
