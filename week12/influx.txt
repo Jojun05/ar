@@ -65,3 +65,23 @@ if client is not None:
 print(a)  
 # InfluxDB 작업이 정상적 작동 
 print("running influxdb OK")  
+
+
+
+# 1. 필수 패키지 설치
+sudo apt-get install -y apt-transport-https software-properties-common wget
+
+# 2. GPG 키 가져오기
+sudo mkdir -p /etc/apt/keyrings/
+wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/grafana.gpg > /dev/null
+
+# 3. 안정(stable) 릴리즈용 저장소 추가
+echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list > /dev/null
+
+# 4. 패키지 목록 업데이트 및 Grafana 설치
+sudo apt-get update && sudo apt-get install grafana -y
+
+# 5. Grafana 서버 시작
+sudo systemctl start grafana-server
+자동부팅
+sudo systemctl enable grafana-server
