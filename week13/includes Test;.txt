@@ -1,0 +1,45 @@
+// Test.h 헤더를 포함하여 메시지 구조체, 상수 등을 사용할 수 있게 함
+includes Test;
+
+// 어플리케이션 구성 정의
+configuration TestAppC {
+}
+
+// 실제 컴포넌트 구성
+implementation {
+    // 사용자 정의 모듈(TestC) 및 시스템 기본 부팅(MainC) 컴포넌트 사용
+    components TestC, MainC;
+
+    // LED 제어 및 밀리초 타이머 컴포넌트 추가
+    components LedsC, new TimerMilliC();
+
+    // 무선 통신을 위한 ActiveMessage 및 AMSender 컴포넌트 설정
+    components ActiveMessageC as AMC;
+    components new AMSenderC(AM_TEST_DATA_MSG) as AMSC;
+
+    // 부팅 인터페이스 연결: TestC가 부팅 완료를 MainC로부터 전달받음
+    TestC.Boot -> MainC;
+
+    // LED 인터페이스 연결
+    TestC.Leds -> LedsC;
+
+    // 타이머 인터페이스 연결
+    TestC.MilliTimer -> TimerMilliC;
+
+    // 무선 제어 및 송신 인터페이스 연결
+    TestC.RadioControl -> AMC;
+    TestC.RadioSend -> AMSC;
+
+    // 온습도 센서(Sensirion SHT11) 컴포넌트 인스턴스화 및 연결
+    components new SensirionSht11C() as Sht11Ch0C;
+    TestC.Temp -> Sht11Ch0C.Temperature; // 온도 센서 연결
+    TestC.Humi -> Sht11Ch0C.Humidity;    // 습도 센서 연결
+
+    // 조도 센서 컴포넌트 인스턴스화 및 연결
+    components new IlluAdcC() as Illu;
+    TestC.Illu -> Illu;
+
+    // 배터리 전압 측정 컴포넌트 연결
+    components BatteryC;
+    TestC.Battery -> BatteryC;
+}
